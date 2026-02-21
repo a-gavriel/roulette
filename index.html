@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<meta http-equiv='cache-control' content='no-cache'>
+<meta http-equiv='expires' content='0'>
+<meta http-equiv='pragma' content='no-cache'>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wheel of Names</title>
+    <link rel="icon" href="resources/favicon.ico" sizes="any">
+    <link rel="stylesheet" href="main.css" type="text/css">
+    <script type="text/javascript" src="js/Winwheel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+</head>
+<!--v1.0.7-->
+
+<body>
+    <button type="button" class="toggle-button" id="timer-toggle" aria-pressed="false">⌛</button>
+    <div class="container">
+        <div class="wheel-and-timer-container">
+            <div class="arrow-container">
+                <img src="./resources/arrow.png">
+            </div>
+            <div class="wheel-container">
+                <td width="438" height="582" class="the_wheel">
+                    <button onClick="startSpin();" type="button" class="canvas-button">
+                        <canvas id="canvas" width="800" height="800"></canvas>
+                    </button>
+                </td>
+            </div>
+        </div>
+        <div class="timer-container">
+            <span id="timer-header-label">Time: 15m / 🧍‍♂️</span>
+            <div class="buttons">
+                <button id="less-time-button" type="button" class="less-time-button">
+                    Decrease 🧍‍♂️
+                </button>
+                <button id="add-time-button" type="button" class="add-time-button">
+                    Increase 🧍‍♂️
+                </button>
+            </div>
+            <span id="timer-division-label">5 🧍‍♂️ = 3:00 / 🧍‍♂️</span>
+            <div class="timer">
+                <span id="time" style="font-size:50px;">00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="names-container">
+        <button type="button" class="collapsible-button">≡</button>
+        <div class="content">
+            <form class="js-form">
+                <input autofocus type="text" aria-label="Enter a name to add" placeholder="Enter a name to add"
+                    class="js-name-input">
+            </form>
+            <ul class="todo-list js-name-list"></ul>
+            <div class="empty-state">
+            </div>
+            <!-- Presets functionality -->
+            <div class="preset-controls">
+                <h3>Presets</h3>
+                <div class="save-preset">
+                    <input type="text" id="preset-name" placeholder="Enter preset name">
+                    <button id="save-preset-btn">Save Current List</button>
+                </div>
+                <div class="preset-list-container">
+                    <select id="preset-list" size="3"></select>
+                    <div class="preset-buttons">
+                        <button id="load-preset-btn">Load</button>
+                        <button id="delete-preset-btn">Delete</button>
+                    </div>
+                </div>
+                <button id="clear-presets-btn" class="danger-button">Clear All Presets</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/WheelScript.js"></script>
+</body>
+
+</html>
