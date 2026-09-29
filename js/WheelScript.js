@@ -19,6 +19,12 @@ for (let i = 0; i<default_names.length; i++) {
     }
 }
 
+function isMobile() {
+    return window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+let fast_animation = !isMobile();
+
 function getWheelSize() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
@@ -51,8 +57,8 @@ function buildWheel(segmentsData) {
         'animation':           // Specify the animation to use.
         {
             'type': 'spinToStop',
-            'duration': 1,
-            'spins': 2,
+            'duration': fast_animation ? 1 : 2,
+            'spins': fast_animation ? 2 : 4,
             'callbackFinished': alertPrize,
         }
     });
@@ -102,10 +108,10 @@ function showNotification(message) {
     // Append the notification to the body
     document.body.appendChild(notification);
 
-    // Remove the notification after 3 seconds
+    // Remove the notification after 2 seconds
     setTimeout(function() {
         document.body.removeChild(notification);
-    }, 3000);
+    }, 2000);
 }
 
 function startTimer(duration, display) {
@@ -238,16 +244,10 @@ function renderWheel() {
 // Function to add a name.
 // -------------------------------------------------------
 function addName(text) {
-    // Calculate the color index based on the current length of nameList
-    let fillStyle;
-    if (nameList.length < first_10_colors.length) {
-        // If we have fewer than 10 names, use corresponding color from the array
-        fillStyle = first_10_colors[nameList.length];
-    } else {
-        // Otherwise, use the light gray default color
-        fillStyle = light_gray;
-    }
-    
+    const usedColors = new Set(nameList.map(item => item.fillStyle));
+    const availableColor = first_10_colors.find(color => !usedColors.has(color));
+    const fillStyle = availableColor || light_gray;
+
     const name = {
         text,
         id: Date.now(),
@@ -330,11 +330,29 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('timer-hidden', !enabled);
     };
 
-    // Default: enabled
-    setTimerEnabled(true);
+    // Default: enabled on desktop, disabled on mobile
+    setTimerEnabled(!isMobile());
 
     toggleButton.addEventListener('click', () => {
         setTimerEnabled(!toggleButton.classList.contains('is-active'));
+    });
+});
+
+// Speed toggle button
+document.addEventListener('DOMContentLoaded', () => {
+    const speedButton = document.getElementById('speed-toggle');
+    if (!speedButton) return;
+
+    const setFastAnimation = (fast) => {
+        fast_animation = fast;
+        speedButton.textContent = fast ? '⚡' : '🐢';
+        speedButton.setAttribute('aria-pressed', fast ? 'true' : 'false');
+    };
+
+    setFastAnimation(!isMobile());
+
+    speedButton.addEventListener('click', () => {
+        setFastAnimation(!fast_animation);
     });
 });
 
@@ -466,7 +484,17 @@ function loadPreset() {
         
         // Update the wheel with the new names
         renderWheel();
-        
+
+        // On mobile, close the collapsible panel after loading
+        if (isMobile()) {
+            const collButton = document.querySelector('.collapsible-button');
+            const content = collButton ? collButton.nextElementSibling : null;
+            if (content && content.style.display === 'block') {
+                collButton.classList.remove('active');
+                content.style.display = 'none';
+            }
+        }
+
         showNotification(`Preset "${selectedPreset}" loaded successfully`);
     }
 }
